@@ -1,12 +1,8 @@
+# Implementation of k nearest neighbours for binary decision.
+# It can be simply modified for more than two classifiers.
+
 import numpy as np
 import pandas as pd
-
-
-def find_max_1(list_18):
-    max_value = max(list_18)
-    for i18 in range(len(list_18)):
-        if list_18[i18] == max_value:
-            return i18 + 1
 
 
 def work_function(train_x1, train_y1, length1, list1, k1):
@@ -15,6 +11,10 @@ def work_function(train_x1, train_y1, length1, list1, k1):
 
     work_array = np.column_stack((sq_distance, train_y1))
     work_array = work_array[work_array[:, 0].argsort()]
+
+    # this part of code needs to be modified for multiple classes.
+    # Just create count array with total number of classifiers....and return the class for which count is max.
+    # Can be achieved using either dict or list
     count = [0, 0]
 
     for i8 in range(k1):
@@ -22,9 +22,13 @@ def work_function(train_x1, train_y1, length1, list1, k1):
             count[0] += 1
         elif work_array[i8, 1] == 1:
             count[1] += 1
-    return find_max_1(count)
+    if count[0] > count[1]:
+        return 0
+    else:
+        return 1
 
 
+# Calculates the best k_parameter to perform the above prediction.
 def best_k(file_path, dist_parameter_num, k_max):
 
     data = pd.read_csv(file_path)
@@ -73,9 +77,17 @@ def best_k(file_path, dist_parameter_num, k_max):
 
     return k_best, accuracy_array, train_x, train_y
 
+# The main function
+
 
 def k_nearest_neighbour(source_file_path, source_dist_parameter_num, source_k_max, source_pred_list):
     best_k_parameter, array_accuracy, train_xx, train_yy = best_k(source_file_path, source_dist_parameter_num, source_k_max)
 
     return work_function(train_xx, train_yy, len(train_xx), source_pred_list, best_k_parameter)
 
+
+list_parameters = [3, 50, 36, 7, 39, 3, 30, 0 , 1, 3, 2]
+
+result_1 = k_nearest_neighbour('teleCust1000t.csv', 11, 30, list_parameters)
+print("final_result")
+print(result_1)
